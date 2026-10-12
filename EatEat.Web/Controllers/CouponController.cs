@@ -24,6 +24,10 @@ namespace EatEat.Web.Controllers
             {
                 list.AddRange(JsonConvert.DeserializeObject<List<CouponDto>>(Convert.ToString(response.Result)));
             }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
 
             return View(list);
         }
@@ -42,8 +46,14 @@ namespace EatEat.Web.Controllers
 
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["success"] = "Coupon created successfully.";
                     return RedirectToAction(nameof(Index));
                 }
+                else
+                {
+                    TempData["error"] = response?.Message;
+                }
+
             }
             return View(model);
         }
@@ -68,7 +78,12 @@ namespace EatEat.Web.Controllers
                 var response = await _couponService.UpdateCouponAsync(model);
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["success"] = "Coupon updated successfully.";
                     return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message;
                 }
             }
 
@@ -93,7 +108,12 @@ namespace EatEat.Web.Controllers
             var response = await _couponService.DeleteCouponAsync(model.CouponId);
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Coupon deleted successfully.";
                 return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
             }
 
             return View(model);
