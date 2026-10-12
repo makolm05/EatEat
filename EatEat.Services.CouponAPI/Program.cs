@@ -1,4 +1,4 @@
-using EatEat;
+using EatEat.Services.CouponAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.RegisterServices();

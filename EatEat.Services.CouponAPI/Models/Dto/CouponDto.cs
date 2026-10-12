@@ -1,4 +1,4 @@
-﻿namespace EatEat.Services.CouponAPI.Models.DTO
+﻿namespace EatEat.Services.CouponAPI.Models.Dto
 {
     public class CouponDto
     {

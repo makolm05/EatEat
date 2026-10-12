@@ -6,7 +6,7 @@ namespace EatEat.Services.CouponAPI.Helpers.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Models.Coupon, Models.DTO.CouponDto>().ReverseMap();
+            CreateMap<Models.Coupon, Models.Dto.CouponDto>().ReverseMap();
         }
     }
 }

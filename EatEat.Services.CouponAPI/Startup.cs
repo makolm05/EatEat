@@ -3,7 +3,7 @@ using EatEat.Services.CouponAPI.Data;
 using EatEat.Services.CouponAPI.Helpers;
 using EatEat.Services.CouponAPI.Helpers.Mapping;
 
-namespace EatEat
+namespace EatEat.Services.CouponAPI
 {
     public static class Startup
     {

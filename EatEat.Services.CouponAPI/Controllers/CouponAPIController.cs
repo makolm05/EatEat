@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using EatEat.Services.CouponAPI.Data;
-using EatEat.Services.CouponAPI.Models.Dto;
-using EatEat.Services.CouponAPI.Models.DTO;
 using EatEat.Services.CouponAPI.Models;
+using EatEat.Services.CouponAPI.Models.Dto;
 
 namespace EatEat.Services.CouponAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Coupon")]
     public class CouponAPIController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -119,6 +118,7 @@ namespace EatEat.Services.CouponAPI.Controllers
         }
 
         [HttpDelete]
+        [Route("{id:int}")]
         public ResponseDto Delete(int id)
         {
             try
