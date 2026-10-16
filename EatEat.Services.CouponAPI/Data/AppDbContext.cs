@@ -1,6 +1,6 @@
-﻿using EatEat.Services.CouponAPI.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using EatEat.Services.CouponAPI.Models;
 
-using Microsoft.EntityFrameworkCore;
 namespace EatEat.Services.CouponAPI.Data
 {
     public class AppDbContext : DbContext
