@@ -18,7 +18,7 @@ namespace EatEat.Web.Services
             return await _baseService.SendAsync(new RequestDto()
             {
                 APIType = StaticDetails.APIType.GET,
-                Url = StaticDetails.CouponAPIBase + "/api/coupon"
+                Url = StaticDetails.CouponAPIPath
             });
         }
 
@@ -27,7 +27,7 @@ namespace EatEat.Web.Services
             return await _baseService.SendAsync(new RequestDto()
             {
                 APIType = StaticDetails.APIType.GET,
-                Url = StaticDetails.CouponAPIBase + "/api/coupon/" + id
+                Url = StaticDetails.CouponAPIPath + id
             });
         }
 
@@ -36,7 +36,7 @@ namespace EatEat.Web.Services
             return await _baseService.SendAsync(new RequestDto()
             {
                 APIType = StaticDetails.APIType.GET,
-                Url = StaticDetails.CouponAPIBase + "/api/coupon/GetByCode/" + CouponCode
+                Url = StaticDetails.CouponAPIPath + "GetByCode/" + CouponCode
             });
         }
 
@@ -45,7 +45,7 @@ namespace EatEat.Web.Services
             return await _baseService.SendAsync(new RequestDto()
             {
                 APIType = StaticDetails.APIType.POST,
-                Url = StaticDetails.CouponAPIBase + "/api/coupon",
+                Url = StaticDetails.CouponAPIPath,
                 Data = couponDto
             });
         }
@@ -55,7 +55,7 @@ namespace EatEat.Web.Services
             return await _baseService.SendAsync(new RequestDto()
             {
                 APIType = StaticDetails.APIType.PUT,
-                Url = StaticDetails.CouponAPIBase + "/api/coupon",
+                Url = StaticDetails.CouponAPIPath,
                 Data = couponDto
             });
         }
@@ -65,7 +65,7 @@ namespace EatEat.Web.Services
             return await _baseService.SendAsync(new RequestDto()
             {
                 APIType = StaticDetails.APIType.DELETE,
-                Url = StaticDetails.CouponAPIBase + "/api/coupon/" + id
+                Url = StaticDetails.CouponAPIPath + id
             });
         }
 

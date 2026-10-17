@@ -11,10 +11,15 @@ namespace EatEat.Web
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddHttpClient();
+
             builder.Services.AddHttpClient<ICouponService, CouponService>();
+            builder.Services.AddHttpClient<IAuthService, AuthService>();
 
             StaticDetails.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
+            StaticDetails.IdentityAPIBase = builder.Configuration["ServiceUrls:IdentityAPI"];
 
+            builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IBaseService, BaseService>();
             builder.Services.AddScoped<ICouponService, CouponService>();
         }

@@ -46,7 +46,7 @@ namespace EatEat.Services.IdentityAPI.Controllers
             {
                 _response.IsSuccess = false;
                 _response.Message = "User or password is incorrect";
-                return NotFound(_response);
+                return BadRequest(_response);
             }
             catch(Exception ex)
             {
@@ -69,7 +69,7 @@ namespace EatEat.Services.IdentityAPI.Controllers
                 _response.IsSuccess = false;
                 _response.Message = ex.Message;
                 if (ex is UserNotFoundException || ex is RoleNotFoundException)
-                    return NotFound(_response);
+                    return BadRequest(_response);
                 else if (ex is RoleAlreadySetException)
                     return BadRequest(_response);
 
