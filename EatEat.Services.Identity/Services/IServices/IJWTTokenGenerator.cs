@@ -4,6 +4,6 @@ namespace EatEat.Services.IdentityAPI.Services.IServices
 {
     public interface IJWTTokenGenerator
     {
-        string GenerateToken(ApplicationUser user);
+        string GenerateToken(ApplicationUser user, IEnumerable<string> roles);
     }
 }

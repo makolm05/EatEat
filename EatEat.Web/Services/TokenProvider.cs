@@ -17,17 +17,17 @@ namespace EatEat.Web.Services
         public string? GetToken()
         {
             string? token = null;
-            _httpContextAccessor.HttpContext?.Request.Cookies.TryGetValue(StaticDetails.TokenCoockie, out token);
+            _httpContextAccessor.HttpContext?.Request.Cookies.TryGetValue(StaticDetails.TokenCookie, out token);
             return token;
         }
 
         public void SetToken(string token)
         {
-            _httpContextAccessor.HttpContext?.Response.Cookies.Append(StaticDetails.TokenCoockie, token);
+            _httpContextAccessor.HttpContext?.Response.Cookies.Append(StaticDetails.TokenCookie, token);
         }
         public void ClearToken()
         {
-            _httpContextAccessor.HttpContext?.Response.Cookies.Delete(StaticDetails.TokenCoockie);
+            _httpContextAccessor.HttpContext?.Response.Cookies.Delete(StaticDetails.TokenCookie);
         }
     }
 }

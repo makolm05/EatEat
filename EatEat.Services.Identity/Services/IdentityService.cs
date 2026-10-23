@@ -41,10 +41,11 @@ namespace EatEat.Services.IdentityAPI.Services
             if (!isValid)
                 throw new UserNotFoundException(user.Id);
 
+            var roles = await _userManager.GetRolesAsync(user);
             return new LoginResponseDto
             {
                 User = _mapper.Map<UserDto>(user),
-                Token = _tokenGenetrator.GenerateToken(user)
+                Token = _tokenGenetrator.GenerateToken(user, roles)
             };
         }
 

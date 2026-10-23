@@ -4,6 +4,6 @@ namespace EatEat.Web.Services.Interfaces
 {
     public interface IBaseService
     {
-        Task<ResponseDto?> SendAsync(RequestDto dto);
+        Task<ResponseDto?> SendAsync(RequestDto dto, bool withBearer = true);
     }
 }

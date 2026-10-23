@@ -1,7 +1,8 @@
-﻿@using System.Globalization
+﻿@using EatEat.Web.Utility
+@using System.Globalization
 @using EatEat.Web.Models.Dto
-@model IEnumerable<CouponDto>
 
+@model IEnumerable<CouponDto>
 
 <div class="card shadow border-0 mt-4">
 	<div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -12,14 +13,16 @@
 		</div>
 	</div>
 	<div class="card-body p-4">
-		<div class="row pb-3">
-			<div class="col-6">
+		@if (User.IsInRole(StaticDetails.AdminRole))
+		{
+			<div class="row pb-3">
+				<div class="col-6">
+				</div>
+				<div class="col-6 text-end">
+					<a asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Coupon</a>
+				</div>
 			</div>
-			<div class="col-6 text-end">
-				<a asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Coupon</a>
-
-			</div>
-		</div>
+		}
 		<table class="table">
 			<thead>
 				<tr>
@@ -32,7 +35,10 @@
 					<th class="text-center">
 						Minimum Amount
 					</th>
-					<th></th>
+					@if (User.IsInRole(StaticDetails.AdminRole))
+					{
+						<th></th>
+					}
 				</tr>
 			</thead>
 			<tbody>
@@ -48,14 +54,17 @@
 						<td class="text-center">
 							@coupon.MinAmount.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))
 						</td>
-						<td class="text-center">
-							<a asp-action="Update" asp-route-id="@coupon.CouponId" class="btn btn-warning me-2">
-								<i class="bi bi-pencil"></i>
-							</a>
-							<a asp-action="Delete" asp-route-id="@coupon.CouponId" class="btn btn-danger">
-								<i class="bi bi-trash"></i>
-							</a>
-						</td>
+						@if (User.IsInRole(StaticDetails.AdminRole))
+						{
+							<td class="text-center">
+								<a asp-action="Update" asp-route-id="@coupon.CouponId" class="btn btn-warning me-2">
+									<i class="bi bi-pencil-square"></i>
+								</a>
+								<a asp-action="Delete" asp-route-id="@coupon.CouponId" class="btn btn-danger">
+									<i class="bi bi-trash"></i>
+								</a>
+							</td>
+						}
 					</tr>
 				}
 			</tbody>

@@ -1,9 +1,13 @@
-﻿using EatEat.Web.Models.Dto;
+﻿using Newtonsoft.Json;
+using EatEat.Web.Models.Dto;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using EatEat.Web.Services.Interfaces;
-using static EatEat.Web.Utility.StaticDetails;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication;
+using static EatEat.Web.Utility.StaticDetails;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace EatEat.Web.Controllers
 {
@@ -11,8 +15,9 @@ namespace EatEat.Web.Controllers
     {
         protected readonly List<SelectListItem> _roles;
         private readonly IAuthService _authService;
+        private readonly ITokenProvider _tokenProvider;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, ITokenProvider tokenProvider)
         {
             _roles = Enum.GetNames<APIRoles>().Select(x => new SelectListItem()
             {
@@ -21,6 +26,7 @@ namespace EatEat.Web.Controllers
             }).ToList();
 
             _authService = authService;
+            _tokenProvider = tokenProvider;
         }
 
         [HttpGet]
@@ -41,8 +47,10 @@ namespace EatEat.Web.Controllers
             }
 
             var responseDto = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(result.Result));
-            TempData["success"] = "Login successfull";
+            _tokenProvider.SetToken(responseDto.Token);
 
+            await SignInUser(responseDto);
+            TempData["success"] = "Login successfull";
             return RedirectToAction("Index", "Home");
         }
 
@@ -83,9 +91,31 @@ namespace EatEat.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            return View();
+            await HttpContext.SignOutAsync();
+            _tokenProvider.ClearToken();
+            return RedirectToAction("Index", "Home");
+        }
+
+        private async Task SignInUser(LoginResponseDto model)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(model.Token);
+
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value),
+                new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.First(x => x.Type == JwtRegisteredClaimNames.Name).Value),
+                new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.First(x => x.Type == JwtRegisteredClaimNames.Email).Value),
+                new Claim(ClaimTypes.Name, jwt.Claims.First(x => x.Type == JwtRegisteredClaimNames.Email).Value)
+            };
+            claims.Add(new Claim(ClaimTypes.Role, jwt.Claims.First(x => x.Type == nameof(ClaimTypes.Role).ToLower()).Value));
+
+            identity.AddClaims(claims);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
     }
 }

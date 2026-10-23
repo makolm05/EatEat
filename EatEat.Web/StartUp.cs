@@ -1,6 +1,7 @@
 ﻿using EatEat.Web.Utility;
 using EatEat.Web.Services;
 using EatEat.Web.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace EatEat.Web
 {
@@ -16,12 +17,23 @@ namespace EatEat.Web
             builder.Services.AddHttpClient<IAuthService, AuthService>();
 
             StaticDetails.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
+            StaticDetails.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
             StaticDetails.IdentityAPIBase = builder.Configuration["ServiceUrls:IdentityAPI"];
+
+            builder.Services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opt =>
+                {
+                    opt.ExpireTimeSpan = TimeSpan.FromHours(10);
+                    opt.LoginPath = "/Auth/Login";
+                    opt.AccessDeniedPath = "/Auth/AccessDenied";
+                });
 
             builder.Services.AddScoped<ITokenProvider, TokenProvider>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IBaseService, BaseService>();
             builder.Services.AddScoped<ICouponService, CouponService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
         }
 
         public static void ConfigurePipeline(this WebApplication app)

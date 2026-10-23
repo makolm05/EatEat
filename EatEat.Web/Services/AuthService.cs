@@ -19,7 +19,7 @@ namespace EatEat.Web.Services
                 APIType = StaticDetails.APIType.POST,
                 Url = StaticDetails.IdentityAPIPath + "Login",
                 Data = dto
-            });
+            }, false);
         }
 
         public async Task<ResponseDto?> RegisterAsync(RegistrationRequestDto dto)
@@ -29,7 +29,7 @@ namespace EatEat.Web.Services
                 APIType = StaticDetails.APIType.POST,
                 Url = StaticDetails.IdentityAPIPath + "Register",
                 Data = dto
-            });
+            }, false);
         }
 
         public async Task<ResponseDto?> AssignRoleAsync(AssignRoleDto dto)

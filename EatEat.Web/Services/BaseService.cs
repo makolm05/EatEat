@@ -9,14 +9,15 @@ namespace EatEat.Web.Services
 {
     public class BaseService : IBaseService
     {
+        private readonly ITokenProvider _tokenProvider;
         private readonly IHttpClientFactory _httpClientFactory;
-
-        public BaseService(IHttpClientFactory httpClientFactory)
+        public BaseService(ITokenProvider tokenProvider, IHttpClientFactory httpClientFactory)
         {
+            _tokenProvider = tokenProvider;
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<ResponseDto?> SendAsync(RequestDto request)
+        public async Task<ResponseDto?> SendAsync(RequestDto request, bool withBearer)
         {
             try
             {
@@ -24,7 +25,10 @@ namespace EatEat.Web.Services
 
                 using var message = new HttpRequestMessage();
                 message.Headers.Add("Accept", "application/json");
+                
                 //token
+                if (withBearer)
+                    message.Headers.Add("Authorization", $"Bearer {_tokenProvider.GetToken()}");
 
                 message.RequestUri = new Uri(request.Url);
                 if (request.Data != null)

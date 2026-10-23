@@ -1,10 +1,16 @@
-﻿namespace EatEat.Web.Models.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EatEat.Web.Models.Dto
 {
     public class RegistrationRequestDto
     {
+        [Required]
         public string Name { get; set; } = string.Empty;
+        [Required]
         public string Email { get; set; } = string.Empty;
+        [Required]
         public string Password { get; set; } = string.Empty;
+        [Required]
         public string PhoneNumber { get; set; } = string.Empty;
         public string? Role { get; set; }
     }

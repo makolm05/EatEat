@@ -1,10 +1,10 @@
-﻿using EatEat.Services.IdentityAPI.Models;
-using EatEat.Services.IdentityAPI.Services.IServices;
+﻿using System.Text;
+using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using EatEat.Services.IdentityAPI.Models;
+using EatEat.Services.IdentityAPI.Services.IServices;
 
 namespace EatEat.Services.IdentityAPI.Services
 {
@@ -16,7 +16,7 @@ namespace EatEat.Services.IdentityAPI.Services
             _jwtOptions = jwtOptions.Value;
         }
 
-        public string GenerateToken(ApplicationUser user)
+        public string GenerateToken(ApplicationUser user, IEnumerable<string> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -26,8 +26,9 @@ namespace EatEat.Services.IdentityAPI.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Name, user.Name),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
             };
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var tokenDescriptor = new SecurityTokenDescriptor()
             {

@@ -2,19 +2,22 @@
 using Microsoft.AspNetCore.Mvc;
 using EatEat.Services.CouponAPI.Data;
 using EatEat.Services.CouponAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using EatEat.Services.CouponAPI.Models.Dto;
+using EatEat.Services.CouponAPI.Helpers;
 
 namespace EatEat.Services.CouponAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/Coupon")]
-    public class CouponAPIController : ControllerBase
+    public class CouponController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly ResponseDto _response;
         private readonly AppDbContext _db;
 
-        public CouponAPIController(AppDbContext db, IMapper mapper)
+        public CouponController(AppDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
@@ -76,6 +79,7 @@ namespace EatEat.Services.CouponAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public ResponseDto Create([FromBody] CouponDto couponDto)
         {
             try
@@ -97,6 +101,7 @@ namespace EatEat.Services.CouponAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = Roles.Admin)]
         public ResponseDto Update([FromBody] CouponDto couponDto)
         {
             try
@@ -119,6 +124,7 @@ namespace EatEat.Services.CouponAPI.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = Roles.Admin)]
         public ResponseDto Delete(int id)
         {
             try
