@@ -15,5 +15,7 @@ namespace EatEat.Web.Models.Dto
         public string Description { get; set; } = string.Empty;
         [Required]
         public string ImageUrl { get; set; } = string.Empty;
+        [Range(1, 100)]
+        public int Count { get; set; } = 1;
     }
 }

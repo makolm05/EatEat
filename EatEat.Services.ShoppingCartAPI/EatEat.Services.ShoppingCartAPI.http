@@ -1,0 +1,6 @@
+@EatEat.Services.ShoppingCartAPI_HostAddress = http://localhost:5232
+
+//GET {{EatEat.Services.ShoppingCartAPI_HostAddress}}/weatherforecast/
+//Accept: application/json
+
+###

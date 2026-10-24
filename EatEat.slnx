@@ -8,5 +8,6 @@
     <Project Path="EatEat.Services.CouponAPI/EatEat.Services.CouponAPI.csproj" Id="51c208d7-bc91-4b1f-8bfc-291e38ffce60" />
     <Project Path="EatEat.Services.Identity/EatEat.Services.IdentityAPI.csproj" Id="40f41a30-359d-482b-a308-e766bd2644ec" />
     <Project Path="EatEat.Services.ProductAPI/EatEat.Services.ProductAPI.csproj" Id="e3503c38-f5b1-46c7-b470-eb4d3bc93e8d" />
+    <Project Path="EatEat.Services.ShoppingCartAPI/EatEat.Services.ShoppingCartAPI.csproj" Id="8f995edc-40ed-438f-b9ef-860610879971" />
   </Folder>
 </Solution>

@@ -6,7 +6,7 @@ using EatEat.Services.ProductAPI.Services.Interfaces;
 
 namespace EatEat.Services.ProductAPI.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [ApiController]
     [Route("api/Product")]
     public class ProductController : Controller
