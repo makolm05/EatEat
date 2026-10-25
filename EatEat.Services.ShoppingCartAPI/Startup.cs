@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using EatEat.Services.ShoppingCartAPI.Data;
 using EatEat.Services.ShoppingCartAPI.Helpers;
+using EatEat.Services.ShoppingCartAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using EatEat.Services.ShoppingCartAPI.Helpers.Mapping;
+using EatEat.Services.ShoppingCartAPI.Services.IService;
 
 namespace EatEat.Services.ShoppingCartAPI
 {
@@ -21,6 +23,11 @@ namespace EatEat.Services.ShoppingCartAPI
             builder.Services.AddAutoMapper(cfg => {
                 cfg.AddProfile<MappingProfile>();
             });
+
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddHttpClient("Product", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+            builder.Services.AddScoped<ICouponService, CouponService>();
+            builder.Services.AddHttpClient("Coupon", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
