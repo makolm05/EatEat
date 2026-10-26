@@ -3,6 +3,7 @@ using Microsoft.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using EatEat.Services.ShoppingCartAPI.Data;
+using EatEat.Services.ShoppingCartAPI.Utility;
 using EatEat.Services.ShoppingCartAPI.Helpers;
 using EatEat.Services.ShoppingCartAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,10 +25,14 @@ namespace EatEat.Services.ShoppingCartAPI
                 cfg.AddProfile<MappingProfile>();
             });
 
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<BackendAPIAuthenticationHttpClientHandler>();
             builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddHttpClient("Product", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+            builder.Services.AddHttpClient("Product", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
+                .AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();
             builder.Services.AddScoped<ICouponService, CouponService>();
-            builder.Services.AddHttpClient("Coupon", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
+            builder.Services.AddHttpClient("Coupon", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]))
+                .AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();

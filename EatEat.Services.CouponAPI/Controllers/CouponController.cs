@@ -8,7 +8,7 @@ using EatEat.Services.CouponAPI.Helpers;
 
 namespace EatEat.Services.CouponAPI.Controllers
 {
-  //  [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/Coupon")]
     public class CouponController : ControllerBase

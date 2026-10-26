@@ -2,12 +2,14 @@
 {
     public static class StaticDetails
     {
-        public static string ProductAPIBase { get; set; }
+        public static string ProductAPIBase { get; set; } = string.Empty;
         public static string ProductAPIPath => $"{ProductAPIBase}/api/Product/";
-        public static string CouponAPIBase { get; set; }
+        public static string CouponAPIBase { get; set; } = string.Empty;
         public static string CouponAPIPath => $"{CouponAPIBase}/api/Coupon/";
-        public static string IdentityAPIBase { get; set; }
+        public static string IdentityAPIBase { get; set; } = string.Empty;
+        public static string ShoppingCartAPIBase { get; set; } = string.Empty;
         public static string IdentityAPIPath => $"{IdentityAPIBase}/api/Identity/";
+        public static string ShoppingCartAPIPath => $"{ShoppingCartAPIBase}/api/Cart/";
         public const string TokenCookie = "JWTToken";
 
         public enum APIType

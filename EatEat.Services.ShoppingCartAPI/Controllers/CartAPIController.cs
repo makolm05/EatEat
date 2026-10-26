@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using EatEat.Services.ShoppingCartAPI.Data;
 using EatEat.Services.ShoppingCartAPI.Models;
 using EatEat.Services.ShoppingCartAPI.Models.Dto;
@@ -8,6 +9,7 @@ using EatEat.Services.ShoppingCartAPI.Services.IService;
 
 namespace EatEat.Services.ShoppingCartAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/Cart")]
     public class CartAPIController : Controller

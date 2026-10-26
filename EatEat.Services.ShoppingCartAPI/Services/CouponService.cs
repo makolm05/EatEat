@@ -24,10 +24,7 @@ namespace EatEat.Services.ShoppingCartAPI.Services
             {
                 return JsonConvert.DeserializeObject<CouponDto>(apiResponse.Result.ToString());
             }
-            else
-            {
-                throw new Exception(apiResponse.Message);
-            }
+            return new CouponDto();
         }
     }
 }
