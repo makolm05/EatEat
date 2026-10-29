@@ -1,8 +1,10 @@
 ﻿using System.Text;
 using Microsoft.OpenApi;
+using EatEat.MessageBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using EatEat.Services.ShoppingCartAPI.Data;
+using EatEat.Services.ShoppingCartAPI.Models;
 using EatEat.Services.ShoppingCartAPI.Utility;
 using EatEat.Services.ShoppingCartAPI.Helpers;
 using EatEat.Services.ShoppingCartAPI.Services;
@@ -25,8 +27,18 @@ namespace EatEat.Services.ShoppingCartAPI
                 cfg.AddProfile<MappingProfile>();
             });
 
+            builder.Services.AddOptions<AzureServiceBusSettings>()
+                .Configure<IConfiguration>((options, configuration) =>
+                {
+                    options.AzureServiceBusConnectionString =
+                        configuration.GetConnectionString("AzureServiceBusConnectionString")
+                        ?? string.Empty;
+                });
+
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<BackendAPIAuthenticationHttpClientHandler>();
+            builder.Services.AddScoped<IMessageBus, AzureMessageBus>();
+
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddHttpClient("Product", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
                 .AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();

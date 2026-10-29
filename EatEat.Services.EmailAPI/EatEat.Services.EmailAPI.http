@@ -1,0 +1,6 @@
+@EatEat.Services.EmailAPI_HostAddress = http://localhost:5170
+
+//GET {{EatEat.Services.EmailAPI_HostAddress}}/weatherforecast/
+//Accept: application/json
+
+###

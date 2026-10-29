@@ -13,6 +13,16 @@ namespace EatEat.Web.Services
             _baseService = baseService;
         }
 
+        public async Task<ResponseDto?> EmailCart(CartDto dto)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                APIType = StaticDetails.APIType.POST,
+                Url = StaticDetails.ShoppingCartAPIPath + "EmailCartRequest",
+                Data = dto
+            });
+        }
+
         public async Task<ResponseDto?> GetCardByUserIDAsync(string userID)
         {
             return await _baseService.SendAsync(new RequestDto()
@@ -51,5 +61,6 @@ namespace EatEat.Web.Services
                 Data = cartDetailsID
             });
         }
+
     }
 }

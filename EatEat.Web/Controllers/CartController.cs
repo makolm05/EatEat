@@ -55,6 +55,25 @@ namespace EatEat.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> EmailCart()
+        {
+            var cart = await LoadCartBasedOnLoggedInUser();
+            cart.CartHeader.Email = User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+
+            var response = await _cartService.EmailCart(cart);
+
+            if (response != null && response.IsSuccess)
+            {
+                TempData["success"] = "Email will be processed and sent shortly.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["success"] = response.Message;
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpPost]
         public async Task<IActionResult> RemoveCoupon(CartDto dto)
         {
