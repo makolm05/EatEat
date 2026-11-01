@@ -6,6 +6,7 @@ using EatEat.Services.IdentityAPI.Helpers;
 using EatEat.Services.IdentityAPI.Services;
 using EatEat.Services.CouponAPI.Helpers.Mapping;
 using EatEat.Services.IdentityAPI.Services.IServices;
+using EatEat.MessageBus;
 
 namespace EatEat.Services.IdentityAPI
 {
@@ -29,6 +30,16 @@ namespace EatEat.Services.IdentityAPI
                 .AddDefaultTokenProviders();
             
             builder.Services.AddControllers();
+
+            builder.Services.AddOptions<AzureServiceBusSettings>()
+            .Configure<IConfiguration>((options, configuration) =>
+            {
+                options.AzureServiceBusConnectionString =
+                    configuration.GetConnectionString("AzureServiceBusConnectionString")
+                    ?? string.Empty;
+            });
+
+            builder.Services.AddScoped<IMessageBus, AzureMessageBus>();
 
             builder.Services.AddScoped<IJWTTokenGenerator, JWTTokenGenerator>();
             builder.Services.AddScoped<IIdentityService, IdentityService>();

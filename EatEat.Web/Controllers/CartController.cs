@@ -1,20 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using EatEat.Web.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using Newtonsoft.Json;
 using EatEat.Web.Models.Dto;
+using Microsoft.AspNetCore.Mvc;
+using EatEat.Web.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EatEat.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
+        private readonly IOrderService _orderService;
 
-        public CartController(ICartService cartService)
+        public CartController(ICartService cartService, IOrderService orderService)
         {
             _cartService = cartService;
+            _orderService = orderService;
         }
 
         public async Task<IActionResult> Index()
@@ -22,6 +24,38 @@ namespace EatEat.Web.Controllers
             return View(await LoadCartBasedOnLoggedInUser());
         }
 
+        public async Task<IActionResult> Checkout()
+        {
+            return View(await LoadCartBasedOnLoggedInUser());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Checkout(CartDto dto)
+        {
+            var cart = await LoadCartBasedOnLoggedInUser();
+            cart.CartHeader.Phone = dto.CartHeader.Phone;
+            cart.CartHeader.Email = dto.CartHeader.Email;
+            cart.CartHeader.Name = dto.CartHeader.Name;
+
+            var response = await _orderService.CreateOrderAsync(cart);
+
+            if (response != null && response.IsSuccess)
+            {
+                var orderHeader = JsonConvert.DeserializeObject<OrderHeaderDto>(response.Result.ToString());
+                //stripe payment
+
+                return RedirectToAction(nameof(Checkout));
+            }
+
+            TempData["error"] = response.Message;
+            return RedirectToAction(nameof(Checkout));
+        }
+
+        public async Task<IActionResult> Confirmation(int orderId)
+        {
+            return View(orderId);
+        }
+ 
         public async Task<IActionResult> CartDetailsRemove(int ID)
         {
             var response = await _cartService.RemoveFromCartAsync(ID);
@@ -32,7 +66,7 @@ namespace EatEat.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["success"] = response.Message;
+            TempData["error"] = response.Message;
             return RedirectToAction(nameof(Index));
         }
 
@@ -51,10 +85,9 @@ namespace EatEat.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["success"] = response.Message;
+            TempData["error"] = response.Message;
             return RedirectToAction(nameof(Index));
         }
-
 
         [HttpPost]
         public async Task<IActionResult> EmailCart()
@@ -70,7 +103,7 @@ namespace EatEat.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["success"] = response.Message;
+            TempData["error"] = response.Message;
             return RedirectToAction(nameof(Index));
         }
 
@@ -89,7 +122,7 @@ namespace EatEat.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["success"] = response.Message;
+            TempData["error"] = response.Message;
             return RedirectToAction(nameof(Index));
         }
 

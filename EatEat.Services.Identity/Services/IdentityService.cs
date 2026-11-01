@@ -5,6 +5,7 @@ using EatEat.Services.IdentityAPI.Models;
 using EatEat.Services.IdentityAPI.Models.Dto;
 using EatEat.Services.IdentityAPI.Exceptions;
 using EatEat.Services.IdentityAPI.Services.IServices;
+using EatEat.MessageBus;
 
 namespace EatEat.Services.IdentityAPI.Services
 {

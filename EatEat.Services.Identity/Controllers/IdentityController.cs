@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using EatEat.Services.IdentityAPI.Services.IServices;
-using EatEat.Services.IdentityAPI.Models.Dto;
+﻿using EatEat.MessageBus;
 using EatEat.Services.IdentityAPI.Exceptions;
+using EatEat.Services.IdentityAPI.Models.Dto;
+using EatEat.Services.IdentityAPI.Services.IServices;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EatEat.Services.IdentityAPI.Controllers
 {
@@ -12,10 +13,14 @@ namespace EatEat.Services.IdentityAPI.Controllers
     {
         protected ResponseDto _response;
         private readonly IIdentityService _identityService;
+        private readonly IConfiguration _configuration;
+        private readonly IMessageBus _messageBus;
 
-        public IdentityController(IIdentityService identityService)
+        public IdentityController(IIdentityService identityService, IConfiguration configuration, IMessageBus messageBus)
         {
             _response = new();
+            _messageBus = messageBus;
+            _configuration = configuration;
             _identityService = identityService;
         }
 
@@ -31,6 +36,7 @@ namespace EatEat.Services.IdentityAPI.Controllers
                 return BadRequest(_response);
             }
 
+            await _messageBus.PublishMessage(model.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue"));
             return Ok(_response);
         }
 

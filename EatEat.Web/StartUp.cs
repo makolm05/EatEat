@@ -17,11 +17,13 @@ namespace EatEat.Web
             builder.Services.AddHttpClient<IProductService, ProductService>();
             builder.Services.AddHttpClient<IAuthService, AuthService>();
             builder.Services.AddHttpClient<ICartService, CartService>();
+            builder.Services.AddHttpClient<IOrderService, OrderService>();
 
             StaticDetails.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
             StaticDetails.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
             StaticDetails.IdentityAPIBase = builder.Configuration["ServiceUrls:IdentityAPI"];
             StaticDetails.ShoppingCartAPIBase = builder.Configuration["ServiceUrls:ShoppingCartAPI"];
+            StaticDetails.OrderAPIBase = builder.Configuration["ServiceUrls:OrderAPI"];
 
             builder.Services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -38,6 +40,7 @@ namespace EatEat.Web
             builder.Services.AddScoped<ICouponService, CouponService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
         }
 
         public static void ConfigurePipeline(this WebApplication app)
