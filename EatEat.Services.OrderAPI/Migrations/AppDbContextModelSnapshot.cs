@@ -85,6 +85,9 @@ namespace EatEat.Services.OrderAPI.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StripeSessionID")
                         .HasColumnType("nvarchar(max)");
 

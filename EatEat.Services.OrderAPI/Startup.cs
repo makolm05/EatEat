@@ -1,16 +1,16 @@
-﻿using EatEat.MessageBus;
+﻿using Stripe;
+using System.Text;
+using Microsoft.OpenApi;
+using EatEat.MessageBus;
 using EatEat.Services.OrderAPI.Data;
-using EatEat.Services.OrderAPI.Helpers;
-using EatEat.Services.OrderAPI.Helpers.Mapping;
-using EatEat.Services.OrderAPI.Services;
-using EatEat.Services.OrderAPI.Services.IService;
-using EatEat.Services.OrderAPI.Utility;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using Stripe;
-using System.Text;
+using EatEat.Services.OrderAPI.Utility;
+using EatEat.Services.OrderAPI.Helpers;
+using EatEat.Services.OrderAPI.Helpers.Mapping;
+using EatEat.Services.OrderAPI.Services.IService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ProductService = EatEat.Services.OrderAPI.Services.ProductService; // because Stripe.ProductService is also a class, so we need to use alias to avoid ambiguity
 
 namespace EatEat.Services.OrderAPI
 {
@@ -34,7 +34,7 @@ namespace EatEat.Services.OrderAPI
                         configuration.GetConnectionString("AzureServiceBusConnectionString")
                         ?? string.Empty;
                 });
-
+            
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<BackendAPIAuthenticationHttpClientHandler>();
             builder.Services.AddScoped<IMessageBus, AzureMessageBus>();

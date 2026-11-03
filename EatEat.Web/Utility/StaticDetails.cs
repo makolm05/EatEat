@@ -29,5 +29,12 @@
 
         public const string AdminRole = "ADMIN";
         public const string CustomerRole = "CUSTOMER";
+
+        public const string StatusPending = "Pending";
+        public const string StatusApproved = "Approved";
+        public const string StatusReadyForPickup = "ReadyForPickup";
+        public const string StatusCompleted = "Completed";
+        public const string StatusRefunded = "Refunded";
+        public const string StatusCancelled = "Cancelled";
     }
 }

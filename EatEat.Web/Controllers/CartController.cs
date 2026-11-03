@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using EatEat.Web.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
+using EatEat.Web.Utility;
 
 namespace EatEat.Web.Controllers
 {
@@ -42,7 +43,23 @@ namespace EatEat.Web.Controllers
             if (response != null && response.IsSuccess)
             {
                 var orderHeader = JsonConvert.DeserializeObject<OrderHeaderDto>(response.Result.ToString());
-                //stripe payment
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
+                
+                var stripeRequest = new StripeRequestDto
+                {
+                    ApprovedUrl = domain + "Cart/Confirmation?orderId=" + orderHeader.ID,
+                    CancelUrl = domain + "Cart/Checkout",
+                    OrderHeader = orderHeader
+                };
+
+                var stripeResponse = await _orderService.CreateStripeSession(stripeRequest);
+                if(stripeResponse != null && stripeResponse.IsSuccess)
+                {
+                    var stripeSession = JsonConvert.DeserializeObject<StripeRequestDto>(stripeResponse.Result.ToString());
+                    Response.Headers.Add("Location", stripeSession.StripeSessionUrl);
+                    return new StatusCodeResult(StatusCodes.Status303SeeOther);
+                }
+
 
                 return RedirectToAction(nameof(Checkout));
             }
@@ -53,6 +70,18 @@ namespace EatEat.Web.Controllers
 
         public async Task<IActionResult> Confirmation(int orderId)
         {
+            var response = await _orderService.ValidateStripeSession(orderId);
+
+            if (response != null && response.IsSuccess)
+            {
+                var orderHeader = JsonConvert.DeserializeObject<OrderHeaderDto>(response.Result.ToString());
+                if(orderHeader.Status == StaticDetails.StatusApproved)
+                {
+                    return View(orderId);
+                }
+            }
+            
+            //redirect to some error page
             return View(orderId);
         }
  

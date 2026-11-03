@@ -22,5 +22,25 @@ namespace EatEat.Web.Services
                 Data = cartDto
             });
         }
+
+        public async Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                APIType = StaticDetails.APIType.POST,
+                Url = StaticDetails.OrderAPIPath + "CreateStripeSession",
+                Data = stripeRequestDto
+            });
+        }
+
+        public async Task<ResponseDto?> ValidateStripeSession(int orderHeaderID)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                APIType = StaticDetails.APIType.POST,
+                Url = StaticDetails.OrderAPIPath + "ValidateStripeSession",
+                Data = orderHeaderID
+            });
+        }
     }
 }

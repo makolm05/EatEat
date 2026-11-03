@@ -69,11 +69,19 @@ namespace EatEat.Services.OrderAPI.Controllers
                 {
                     SuccessUrl = dto.ApprovedUrl,
                     CancelUrl = dto.CancelUrl,
-                    LineItems = null,
+                    LineItems = new(),
                     Mode = "payment"
                 };
 
-                foreach(var item in dto.OrderHeader.OrderDetails)
+                var discounts = new List<SessionDiscountOptions>()
+                {
+                    new SessionDiscountOptions
+                    {
+                        Coupon = dto.OrderHeader.CouponCode
+                    }
+                };
+
+                foreach (var item in dto.OrderHeader.OrderDetails)
                 {
                     var sessionLineItem = new SessionLineItemOptions
                     {
@@ -93,6 +101,11 @@ namespace EatEat.Services.OrderAPI.Controllers
                     options.LineItems.Add(sessionLineItem);
                 }
 
+                if(dto.OrderHeader.Discount > 0)
+                {
+                    options.Discounts = discounts;
+                }
+
                 var service = new SessionService();
                 var session = await service.CreateAsync(options);
 
@@ -104,6 +117,36 @@ namespace EatEat.Services.OrderAPI.Controllers
                 await _db.SaveChangesAsync();
 
                 _response.Result = dto;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return _response;
+        }
+
+        [HttpPost("ValidateStripeSession")]
+        public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderID)
+        {
+            try
+            {
+                var orderHeader = _db.OrderHeaders.First(x => x.ID == orderHeaderID);
+
+                var service = new SessionService();
+                var session = await service.GetAsync(orderHeader.StripeSessionID);
+
+                var paymentIntent = new PaymentIntentService().Get(session.PaymentIntentId);
+
+                if(paymentIntent.Status == "succeeded")
+                {
+                    orderHeader.PaymentIntentID = paymentIntent.Id;
+                    orderHeader.Status = StaticDetails.StatusApproved;
+                    await _db.SaveChangesAsync();
+                }
+
+                _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
             }
             catch (Exception ex)
             {

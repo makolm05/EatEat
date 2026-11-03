@@ -1,11 +1,12 @@
-﻿using System.Text;
-using Microsoft.OpenApi;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using EatEat.Services.CouponAPI.Data;
+﻿using EatEat.Services.CouponAPI.Data;
 using EatEat.Services.CouponAPI.Helpers;
 using EatEat.Services.CouponAPI.Helpers.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using Stripe;
+using System.Text;
 
 namespace EatEat.Services.CouponAPI
 {
@@ -88,6 +89,8 @@ namespace EatEat.Services.CouponAPI
             app.MapControllers();
 
             DbHelper.ApplyMigration<AppDbContext>(app);
+
+            StripeConfiguration.ApiKey = app.Configuration.GetValue<string>("Stripe:SecretKey");
         }
     }
 }

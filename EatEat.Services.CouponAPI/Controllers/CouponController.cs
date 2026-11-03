@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using EatEat.Services.CouponAPI.Data;
-using EatEat.Services.CouponAPI.Models;
-using Microsoft.AspNetCore.Authorization;
-using EatEat.Services.CouponAPI.Models.Dto;
 using EatEat.Services.CouponAPI.Helpers;
+using EatEat.Services.CouponAPI.Models;
+using EatEat.Services.CouponAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace EatEat.Services.CouponAPI.Controllers
 {
@@ -89,6 +90,17 @@ namespace EatEat.Services.CouponAPI.Controllers
 
                 _db.Add(coupon);
                 _db.SaveChanges();
+
+                var options = new Stripe.CouponCreateOptions
+                {
+                    Id = couponDto.CouponCode,
+                    Name = couponDto.CouponCode,
+                    Currency = "usd",
+                    AmountOff = (long)(couponDto.DiscountAmount * 100),
+                };
+
+                new Stripe.CouponService().Create(options);
+
                 _response.Result = _mapper.Map<CouponDto>(coupon);
             }
             catch (Exception ex)
@@ -111,6 +123,7 @@ namespace EatEat.Services.CouponAPI.Controllers
 
                 _db.Update(coupon);
                 _db.SaveChanges();
+
                 _response.Result = _mapper.Map<CouponDto>(coupon);
             }
             catch (Exception ex)
@@ -133,6 +146,8 @@ namespace EatEat.Services.CouponAPI.Controllers
 
                 _db.Remove(coupon);
                 _db.SaveChanges();
+
+                new Stripe.CouponService().Delete(coupon.CouponCode);
             }
             catch (Exception ex)
             {
