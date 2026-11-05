@@ -4,6 +4,7 @@ using EatEat.Services.EmailAPI.Models.Dto;
 using EatEat.Services.EmailAPI.Services.Interfaces;
 using System.Text;
 using EatEat.Services.EmailAPI.Models;
+using EatEat.Services.EmailAPI.Messages;
 
 namespace EatEat.Services.EmailAPI.Services
 {
@@ -39,6 +40,12 @@ namespace EatEat.Services.EmailAPI.Services
         public async Task RegisterUserEmail(string email)
         {
             await Email($"{email} is registred", "admin@gmail.com");
+        }
+
+        public Task LogOrderPlaced(RewardsMessage rewardsMessage)
+        {
+            string message = $"Order placed for user {rewardsMessage.UserID} with order rewards {rewardsMessage.RewardsActivity}";
+            return Email(message, "admin@gmail.com");
         }
 
         private async Task Email(string message, string email)

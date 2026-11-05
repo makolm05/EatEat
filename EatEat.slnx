@@ -12,6 +12,7 @@
     <Project Path="EatEat.Services.Identity/EatEat.Services.IdentityAPI.csproj" Id="40f41a30-359d-482b-a308-e766bd2644ec" />
     <Project Path="EatEat.Services.OrderAPI/EatEat.Services.OrderAPI.csproj" Id="11a2abdc-ae45-47ab-a2dc-13c5f1b0208c" />
     <Project Path="EatEat.Services.ProductAPI/EatEat.Services.ProductAPI.csproj" Id="e3503c38-f5b1-46c7-b470-eb4d3bc93e8d" />
+    <Project Path="EatEat.Services.RewardAPI/EatEat.Services.RewardAPI.csproj" />
     <Project Path="EatEat.Services.ShoppingCartAPI/EatEat.Services.ShoppingCartAPI.csproj" Id="8f995edc-40ed-438f-b9ef-860610879971" />
   </Folder>
 </Solution>

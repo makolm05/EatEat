@@ -1,4 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
+using EatEat.Services.EmailAPI.Messages;
 using EatEat.Services.EmailAPI.Messaging.Interfaces;
 using EatEat.Services.EmailAPI.Models.Dto;
 using EatEat.Services.EmailAPI.Services;
@@ -12,11 +13,14 @@ namespace EatEat.Services.EmailAPI.Messaging
     public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     {
         private readonly string _emailCartQueue;
+        private readonly string _orderCreatedTopic;
         private readonly string _emailRegisterQueue;
+        private readonly string _orderCreatedEmailSubscription;
         private readonly string _serviceBusConnectionString;
         private readonly IConfiguration _configuration;
         private readonly ServiceBusProcessor _emailCartProcessor;
         private readonly ServiceBusProcessor _emailRegisterProcessor;
+        private readonly ServiceBusProcessor _emailOrderPlacedProcessor;
         private readonly EmailService _emailService;
 
         public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
@@ -26,10 +30,13 @@ namespace EatEat.Services.EmailAPI.Messaging
             _serviceBusConnectionString = _configuration.GetConnectionString("AzureServiceBusConnectionString");
             _emailCartQueue = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
             _emailRegisterQueue = _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue");
+            _orderCreatedTopic = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+            _orderCreatedEmailSubscription = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreated_Email_Subscription");
 
             var client = new ServiceBusClient(_serviceBusConnectionString);
             _emailCartProcessor = client.CreateProcessor(_emailCartQueue);
             _emailRegisterProcessor = client.CreateProcessor(_emailRegisterQueue);
+            _emailOrderPlacedProcessor = client.CreateProcessor(_orderCreatedTopic, _orderCreatedEmailSubscription);
 
             _emailService = emailService;
         }
@@ -45,6 +52,11 @@ namespace EatEat.Services.EmailAPI.Messaging
             _emailRegisterProcessor.ProcessErrorAsync += ErrorHandler;
 
             await _emailRegisterProcessor.StartProcessingAsync();
+
+            _emailOrderPlacedProcessor.ProcessMessageAsync += OnOrderPlacedRequestReceivedAsync;
+            _emailOrderPlacedProcessor.ProcessErrorAsync += ErrorHandler;
+
+            await _emailOrderPlacedProcessor.StartProcessingAsync();
         }
 
         public async Task Stop()
@@ -54,6 +66,9 @@ namespace EatEat.Services.EmailAPI.Messaging
 
             await _emailRegisterProcessor.StopProcessingAsync();
             await _emailRegisterProcessor.DisposeAsync();
+
+            await _emailOrderPlacedProcessor.StopProcessingAsync();
+            await _emailOrderPlacedProcessor.DisposeAsync();
         }
 
         private async Task OnEmailCartRequestReceivedAsync(ProcessMessageEventArgs args)
@@ -83,6 +98,24 @@ namespace EatEat.Services.EmailAPI.Messaging
             {
                 //TODO - try log email
                 await _emailService.RegisterUserEmail(cartDto);
+                await args.CompleteMessageAsync(args.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        private async Task OnOrderPlacedRequestReceivedAsync(ProcessMessageEventArgs args)
+        {
+            var text = Encoding.UTF8.GetString(args.Message.Body);
+            var cartDto = JsonConvert.DeserializeObject<RewardsMessage>(text);
+
+            try
+            {
+                //TODO - try log email
+                await _emailService.LogOrderPlaced(cartDto);
                 await args.CompleteMessageAsync(args.Message);
             }
             catch (Exception ex)

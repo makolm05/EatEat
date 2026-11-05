@@ -144,9 +144,20 @@ namespace EatEat.Services.OrderAPI.Controllers
                     orderHeader.PaymentIntentID = paymentIntent.Id;
                     orderHeader.Status = StaticDetails.StatusApproved;
                     await _db.SaveChangesAsync();
+
+                    var rewards = new RewardsDto
+                    {
+                        OrderID = orderHeader.ID,
+                        UserID = orderHeader.UserID,
+                        RewardsActivity = (int)orderHeader.OrderTotal
+                    };
+
+                    string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+                    await _messageBus.PublishMessage(rewards, topicName);
+
+                    _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
                 }
 
-                _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
             }
             catch (Exception ex)
             {
