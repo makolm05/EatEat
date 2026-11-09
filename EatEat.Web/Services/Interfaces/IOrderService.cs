@@ -4,8 +4,11 @@ namespace EatEat.Web.Services.Interfaces
 {
     public interface IOrderService
     {
+        Task<ResponseDto?> GetAllOrdersAsync(string? userID);
+        Task<ResponseDto?> GetOrderAsync(int orderID);
+        Task<ResponseDto?> UpdateOrderStatusAsync(int orderID, string status);
         Task<ResponseDto?> CreateOrderAsync(CartDto cartDto);
-        Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto);
-        Task<ResponseDto?> ValidateStripeSession(int orderHeaderID);
+        Task<ResponseDto?> CreateStripeSessionAsync(StripeRequestDto stripeRequestDto);
+        Task<ResponseDto?> ValidateStripeSessionAsync(int orderHeaderID);
     }
 }

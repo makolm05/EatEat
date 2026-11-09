@@ -13,6 +13,35 @@ namespace EatEat.Web.Services
             _baseService = baseService;
         }
 
+        public async Task<ResponseDto?> GetAllOrdersAsync(string? userID)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                APIType = StaticDetails.APIType.GET,
+                Url = StaticDetails.OrderAPIPath + $"GetAllOrders?userID={userID}"
+            });
+        }
+
+        public async Task<ResponseDto?> GetOrderAsync(int orderID)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                APIType = StaticDetails.APIType.GET,
+                Url = StaticDetails.OrderAPIPath + $"?orderID={orderID}"
+            });
+        }
+
+        public async Task<ResponseDto?> UpdateOrderStatusAsync(int orderID, string status)
+        {
+            return await _baseService.SendAsync(new RequestDto()
+            {
+                APIType = StaticDetails.APIType.POST,
+                Url = StaticDetails.OrderAPIPath + "UpdateOrderStatus/" + orderID,
+                Data = status
+            });
+        }
+
+
         public async Task<ResponseDto?> CreateOrderAsync(CartDto cartDto)
         {
             return await _baseService.SendAsync(new RequestDto()
@@ -23,7 +52,7 @@ namespace EatEat.Web.Services
             });
         }
 
-        public async Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto)
+        public async Task<ResponseDto?> CreateStripeSessionAsync(StripeRequestDto stripeRequestDto)
         {
             return await _baseService.SendAsync(new RequestDto()
             {
@@ -33,7 +62,7 @@ namespace EatEat.Web.Services
             });
         }
 
-        public async Task<ResponseDto?> ValidateStripeSession(int orderHeaderID)
+        public async Task<ResponseDto?> ValidateStripeSessionAsync(int orderHeaderID)
         {
             return await _baseService.SendAsync(new RequestDto()
             {

@@ -52,7 +52,7 @@ namespace EatEat.Web.Controllers
                     OrderHeader = orderHeader
                 };
 
-                var stripeResponse = await _orderService.CreateStripeSession(stripeRequest);
+                var stripeResponse = await _orderService.CreateStripeSessionAsync(stripeRequest);
                 if(stripeResponse != null && stripeResponse.IsSuccess)
                 {
                     var stripeSession = JsonConvert.DeserializeObject<StripeRequestDto>(stripeResponse.Result.ToString());
@@ -70,7 +70,7 @@ namespace EatEat.Web.Controllers
 
         public async Task<IActionResult> Confirmation(int orderId)
         {
-            var response = await _orderService.ValidateStripeSession(orderId);
+            var response = await _orderService.ValidateStripeSessionAsync(orderId);
 
             if (response != null && response.IsSuccess)
             {

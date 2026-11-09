@@ -11,7 +11,7 @@
         public double Discount { get; set; }
         public double OrderTotal { get; set; }
         public DateTime OrderTime { get; set; }
-        public string? Status = string.Empty;
+        public string? Status { get; set; } = string.Empty;
         public string? PaymentIntentID { get; set; }
         public string? StripeSessionID { get; set; }
         public IEnumerable<OrderDetailsDto> OrderDetails { get; set; }

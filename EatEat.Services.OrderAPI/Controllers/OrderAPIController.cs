@@ -9,6 +9,7 @@ using EatEat.Services.OrderAPI.Helpers;
 using EatEat.Services.OrderAPI.Models;
 using Stripe;
 using Stripe.Checkout;
+using Microsoft.EntityFrameworkCore;
 
 namespace EatEat.Services.OrderAPI.Controllers
 {
@@ -34,6 +35,50 @@ namespace EatEat.Services.OrderAPI.Controllers
             _productService = productService;
         }
 
+        [HttpGet]
+        public ResponseDto? Get(int orderID)
+        {
+            try
+            {
+                var orderHeader = _db.OrderHeaders.Include(x => x.OrderDetails).First(x => x.ID == orderID);
+                _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return _response;
+        }
+
+
+        [HttpGet("GetAllOrders")]
+        public ResponseDto? Get(string? userID = "")
+        {
+            try
+            {
+                IEnumerable<OrderHeader> orderHeaders;
+                if (User.IsInRole(Roles.Admin))
+                {
+                    orderHeaders = _db.OrderHeaders.Include(x => x.OrderDetails).OrderByDescending(x => x.ID).ToList();
+                }
+                else
+                {
+                    orderHeaders = _db.OrderHeaders.Include(x => x.OrderDetails).Where(x => x.UserID == userID).OrderByDescending(x => x.ID).ToList();
+                }
+                _response.Result = _mapper.Map<IEnumerable<OrderHeaderDto>>(orderHeaders);
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+
+            return _response;
+        }
+
         [HttpPost]
         public async Task<ResponseDto> Create([FromBody] CartDto dto)
         {
@@ -57,6 +102,36 @@ namespace EatEat.Services.OrderAPI.Controllers
                 _response.Message = ex.Message;
             }
 
+            return _response;
+        }
+
+        [HttpPost("UpdateOrderStatus/{orderID:int}")]
+        public async Task<ResponseDto> UpdateOrderStatus(int orderID, [FromBody] string status)
+        {
+            try
+            {
+                var orderHeader = _db.OrderHeaders.First(x => x.ID == orderID);
+                if(status == StaticDetails.StatusCancelled)
+                {
+                    var options = new RefundCreateOptions
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderHeader.PaymentIntentID
+                    };
+
+                    var service = new RefundService();
+                    var refund = service.Create(options);
+                }
+
+                orderHeader.Status = status;
+                await _db.SaveChangesAsync();
+                _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
             return _response;
         }
 

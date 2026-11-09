@@ -89,6 +89,7 @@ namespace EatEat.Services.ProductAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStaticFiles();
 
             app.MapControllers();
 
