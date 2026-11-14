@@ -1,4 +1,5 @@
-﻿using static EatEat.Web.Utility.StaticDetails;
+﻿using EatEat.Web.Utility;
+using static EatEat.Web.Utility.StaticDetails;
 
 namespace EatEat.Web.Models.Dto
 {
@@ -8,5 +9,6 @@ namespace EatEat.Web.Models.Dto
         public string Url { get; set; } = string.Empty;
         public object? Data { get; set; }
         public string AccessToken { get; set; } = string.Empty;
+        public ContentType ContentType { get; set; } = ContentType.Json;
     }
 }

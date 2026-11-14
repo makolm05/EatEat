@@ -2,7 +2,9 @@
   <Folder Name="/FrontEnd/">
     <Project Path="EatEat.Web/EatEat.Web.csproj" Id="a9399ab2-c19d-4eab-a32d-1259d5ddb15a" />
   </Folder>
-  <Folder Name="/Gateway/" />
+  <Folder Name="/Gateway/">
+    <Project Path="EatEat.GatewaySolution/EatEat.GatewaySolution.csproj" Id="d93ae7d7-5dae-40f2-9dc6-464525cc9ce9" />
+  </Folder>
   <Folder Name="/Integrations/">
     <Project Path="EatEat.MessageBus/EatEat.MessageBus.csproj" Id="b8f6d223-077e-4433-ba43-1099b1b27c4d" />
   </Folder>

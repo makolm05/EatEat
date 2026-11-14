@@ -46,7 +46,26 @@ namespace EatEat.Services.ProductAPI.Services
         public async Task DeleteProductAsync(int ID)
         {
             var entity = _db.Products.First(x => x.ID == ID);
+
+            if (!string.IsNullOrWhiteSpace(entity.ImageLocalPath))
+            {
+                var dir = Path.Combine(Directory.GetCurrentDirectory(), entity.ImageLocalPath);
+                if (File.Exists(dir))
+                {
+                    File.Delete(dir);
+                }
+            }
+
             _db.Remove(entity);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task SaveProductImage(Product p, string? imageUrl, string localFilePath)
+        {
+            p.ImageUrl = imageUrl;
+            p.ImageLocalPath = localFilePath;
+
+            _db.Products.Update(p);
             await _db.SaveChangesAsync();
         }
     }

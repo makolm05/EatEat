@@ -37,7 +37,8 @@ namespace EatEat.Web.Services
             {
                 APIType = StaticDetails.APIType.POST,
                 Url = StaticDetails.ProductAPIPath,
-                Data = productDto
+                Data = productDto,
+                ContentType = StaticDetails.ContentType.MultipartFormData
             });
         }
 
@@ -47,7 +48,8 @@ namespace EatEat.Web.Services
             {
                 APIType = StaticDetails.APIType.PUT,
                 Url = StaticDetails.ProductAPIPath,
-                Data = productDto
+                Data = productDto,
+                ContentType = StaticDetails.ContentType.MultipartFormData
             });
         }
 

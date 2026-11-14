@@ -24,16 +24,51 @@ namespace EatEat.Web.Services
                 HttpClient client = _httpClientFactory.CreateClient("EatEatAPI");
 
                 using var message = new HttpRequestMessage();
-                message.Headers.Add("Accept", "application/json");
-                
+
+                if(request.ContentType == ContentType.MultipartFormData)
+                {
+                    message.Headers.Add("Accept", "*/*");
+                }
+                else
+                {
+                    message.Headers.Add("Accept", "application/json");
+                }
+
                 //token
                 if (withBearer)
                     message.Headers.Add("Authorization", $"Bearer {_tokenProvider.GetToken()}");
 
                 message.RequestUri = new Uri(request.Url);
-                if (request.Data != null)
+
+                if (request.ContentType == ContentType.MultipartFormData)
                 {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
+                    var content = new MultipartFormDataContent();
+
+                    foreach (var prop in request.Data.GetType().GetProperties())
+                    {
+                        var value = prop.GetValue(request.Data);
+                        if (value != null && value is FormFile)
+                        {
+                            var file = (FormFile)value;
+                            if (file != null)
+                            {
+                                content.Add(new StreamContent(file.OpenReadStream()), prop.Name, file.FileName);
+                            }
+                        }
+                        else
+                        {
+                            content.Add(new StringContent(value == null ? string.Empty : value.ToString()), prop.Name);
+                        }
+                    }
+
+                    message.Content = content;
+                }
+                else
+                {
+                    if (request.Data != null)
+                    {
+                        message.Content = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
+                    }
                 }
                 message.Method = GetHttpMethod(request.APIType);
 

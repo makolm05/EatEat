@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using EatEat.Services.ProductAPI.Helpers;
+﻿using EatEat.Services.ProductAPI.Helpers;
 using EatEat.Services.ProductAPI.Models.Dto;
 using EatEat.Services.ProductAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EatEat.Services.ProductAPI.Controllers
 {
@@ -59,7 +60,26 @@ namespace EatEat.Services.ProductAPI.Controllers
         {
             try
             {
-                _response.Result = await _productService.CreateProductAsync(dto);
+                var result = await _productService.CreateProductAsync(dto);
+
+                if (dto.Image != null)
+                {
+                    var fileName = result.ID + Path.GetExtension(dto.Image.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductImages", fileName);
+                    using var fileStream = new FileStream(filePath, FileMode.Create);
+
+                    dto.Image.CopyTo(fileStream);
+
+                    var baseUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+
+                    await _productService.SaveProductImage(result, $"{baseUrl}/ProductImages/{fileName}", filePath);
+                }
+                else
+                {
+                    await _productService.SaveProductImage(result, null, "https://placehold.co/600x400");
+                }
+
+                _response.Result = result;
             }
             catch (Exception ex)
             {
@@ -76,7 +96,22 @@ namespace EatEat.Services.ProductAPI.Controllers
         {
             try
             {
-                _response.Result = await _productService.UpdateProductAsync(dto);
+                var result = await _productService.UpdateProductAsync(dto);
+
+                if (dto.Image != null)
+                {
+                    var fileName = result.ID + Path.GetExtension(dto.Image.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductImages", fileName);
+                    using var fileStream = new FileStream(filePath, FileMode.Create);
+
+                    dto.Image.CopyTo(fileStream);
+
+                    var baseUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+
+                    await _productService.SaveProductImage(result, $"{baseUrl}/ProductImages/{fileName}", filePath);
+                }
+
+                _response.Result = result;
             }
             catch (Exception ex)
             {

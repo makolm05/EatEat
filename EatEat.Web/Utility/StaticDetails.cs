@@ -27,6 +27,11 @@
             Customer
         }
 
+        public enum ContentType {
+            Json,
+            MultipartFormData
+        }
+
         public const string AdminRole = "ADMIN";
         public const string CustomerRole = "CUSTOMER";
 

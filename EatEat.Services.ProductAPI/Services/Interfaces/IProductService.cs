@@ -9,6 +9,7 @@ namespace EatEat.Services.ProductAPI.Services.Interfaces
         public Task<IEnumerable<ProductDto>> GetAllProductsAsync();
         public Task<Product> CreateProductAsync(ProductDto p);
         public Task<Product> UpdateProductAsync(ProductDto p);
+        public Task SaveProductImage(Product p, string? imageUrl, string localFilePath);
         public Task DeleteProductAsync(int ID);
     }
 }

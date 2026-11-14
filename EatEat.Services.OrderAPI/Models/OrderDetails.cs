@@ -1,4 +1,5 @@
-﻿using EatEat.Services.OrderAPI.Models.Dto;
+﻿using Microsoft.EntityFrameworkCore; 
+using EatEat.Services.OrderAPI.Models.Dto;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,6 +17,7 @@ namespace EatEat.Services.OrderAPI.Models
         public ProductDto? Product { get; set; }
         public int Count { get; set; }
         public string ProductName { get; set; }
+        [Precision(18, 2)]
         public double ProductPrice { get; set; } // if product has updated price, we want to show what was a cost when order were
     }
 }
