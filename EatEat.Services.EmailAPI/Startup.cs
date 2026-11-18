@@ -22,6 +22,7 @@ namespace EatEat.Services.EmailAPI
             optBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             builder.Services.AddSingleton(new EmailService(optBuilder.Options));
 
+            builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
@@ -51,12 +52,12 @@ namespace EatEat.Services.EmailAPI
 
         public static void ConfigurePipeline(this WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
             {
-                app.MapOpenApi();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "EatEat.Services.EmailAPI v1");
+                x.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 

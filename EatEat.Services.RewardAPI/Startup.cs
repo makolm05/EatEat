@@ -22,6 +22,7 @@ namespace EatEat.Services.RewardsAPI
             optBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             builder.Services.AddSingleton(new RewardsService(optBuilder.Options));
 
+            builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
@@ -51,12 +52,12 @@ namespace EatEat.Services.RewardsAPI
 
         public static void ConfigurePipeline(this WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
             {
-                app.MapOpenApi();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "EatEat.Services.RewardAPI v1");
+                x.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 

@@ -51,12 +51,12 @@ namespace EatEat.Services.IdentityAPI
         public static void ConfigurePipeline(this WebApplication app)
         {
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
             {
-                app.MapOpenApi();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "EatEat.Services.IdentityAPI v1");
+                x.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 

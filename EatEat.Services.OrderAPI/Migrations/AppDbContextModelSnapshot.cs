@@ -44,7 +44,8 @@ namespace EatEat.Services.OrderAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ProductPrice")
-                        .HasColumnType("float");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("float(18)");
 
                     b.HasKey("ID");
 

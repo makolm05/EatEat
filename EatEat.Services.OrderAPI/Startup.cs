@@ -96,12 +96,13 @@ namespace EatEat.Services.OrderAPI
 
         public static void ConfigurePipeline(this WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
             {
-                app.MapOpenApi();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "EatEat.Services.OrderAPI v1");
+                x.RoutePrefix = string.Empty;
+            });
+
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
